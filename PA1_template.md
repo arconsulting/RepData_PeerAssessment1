@@ -108,7 +108,7 @@ data.sum.interval[which(data.sum.interval$mean == max(data.sum.interval$mean)), 
 
 ## Imputing missing values
 
-Determine impact of missing values
+Determine impact of missing values. We then imput the missing values by using the mean of non-NA observations.
 
 ```r
 ## Calculate the toal number of missing values in the dataset
@@ -120,8 +120,12 @@ sum(is.na(data$steps))
 ```
 
 ```r
+## Determine value to use for missing values (mean for non-NA)
+na_fill_value <- mean(data$steps, na.rm = TRUE)
+
 ## Create a new dataset that is equal to the original dataset but with the missings data filled in
 data.nona <- data
+data.nona[is.na(data.nona)] <- na_fill_value
 
 ## Group data by date
 data.nona.group.date <- group_by(data.nona, date)
@@ -130,7 +134,7 @@ data.nona.group.date <- group_by(data.nona, date)
 data.nona.sum.date <- summarize(data.nona.group.date, steps = sum(steps))
 
 ## Display histogram
-hist(data.nona.sum.date$steps, col = "blue", xlab = "Steps per day", main = "Total Number of Steps Taken Each Day")
+hist(data.nona.sum.date$steps, col = "cyan", xlab = "Steps per day", main = "Total Number of Steps Taken Each Day")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
@@ -143,8 +147,8 @@ summarize(data.nona.sum.date, mean = mean(steps, na.rm = TRUE), median = median(
 ```
 ## Source: local data frame [1 x 2]
 ## 
-##       mean median
-## 1 10766.19  10765
+##       mean   median
+## 1 10766.19 10766.19
 ```
 
 
