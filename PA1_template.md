@@ -52,20 +52,20 @@ Analyze daily data ignoring NAs:
 
 ```r
 ## Group data by date
-data.group <- group_by(data, date)
+data.group.date <- group_by(data, date)
 
 ## Sum # of steps per day
-data.sum <- summarize(data.group, steps = sum(steps))
+data.sum.date <- summarize(data.group.date, steps = sum(steps))
 
 ## Display histogram
-hist(data.sum$steps, col = "blue", xlab = "Steps per day", main = "Total Number of Steps Taken Each Day")
+hist(data.sum.date$steps, col = "blue", xlab = "Steps per day", main = "Total Number of Steps Taken Each Day")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
 
 ```r
 ## Report mean and median # of steps
-summarize(data.sum, mean = mean(steps, na.rm = TRUE), median = median(steps, na.rm = TRUE))
+summarize(data.sum.date, mean = mean(steps, na.rm = TRUE), median = median(steps, na.rm = TRUE))
 ```
 
 ```
@@ -82,32 +82,27 @@ Analyze average daily activity pattern (ignoring NAs):
 
 ```r
 ## Group data by interval
-data.group <- group_by(data, interval)
+data.group.interval <- group_by(data, interval)
 
 ## Average # of steps per interval
-data.sum <- summarize(data.group, mean = mean(steps, na.rm = TRUE))
+data.sum.interval <- summarize(data.group.interval, mean = mean(steps, na.rm = TRUE))
 
 ## Display time series
-plot(data.sum$interval, data.sum$mean, type = "l", xlab = "Interval", ylab = "Steps", main = "Average # of Steps Taken (averaged across all days)")
+plot(data.sum.interval$interval, data.sum.interval$mean, type = "l", xlab = "Interval", ylab = "Steps", main = "Average # of Steps Taken (averaged across all days)")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
 ```r
-## Report mean and median steps for each date
-summarize(data.sum, max = max(data.sum$steps))
+## Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps
+data.sum.interval[which(data.sum.interval$mean == max(data.sum.interval$mean)), ]
 ```
 
 ```
-## Warning in max(data.sum$steps): no non-missing arguments to max; returning
-## -Inf
-```
-
-```
-## Source: local data frame [1 x 1]
+## Source: local data frame [1 x 2]
 ## 
-##    max
-## 1 -Inf
+##   interval     mean
+## 1      835 206.1698
 ```
 
 
@@ -116,12 +111,40 @@ summarize(data.sum, max = max(data.sum$steps))
 Determine impact of missing values
 
 ```r
-## Count # of NA values
+## Calculate the toal number of missing values in the dataset
 sum(is.na(data$steps))
 ```
 
 ```
 ## [1] 2304
+```
+
+```r
+## Create a new dataset that is equal to the original dataset but with the missings data filled in
+data.nona <- data
+
+## Group data by date
+data.nona.group.date <- group_by(data.nona, date)
+
+## Sum # of steps per day
+data.nona.sum.date <- summarize(data.nona.group.date, steps = sum(steps))
+
+## Display histogram
+hist(data.nona.sum.date$steps, col = "blue", xlab = "Steps per day", main = "Total Number of Steps Taken Each Day")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
+```r
+## Report mean and median # of steps
+summarize(data.nona.sum.date, mean = mean(steps, na.rm = TRUE), median = median(steps, na.rm = TRUE))
+```
+
+```
+## Source: local data frame [1 x 2]
+## 
+##       mean median
+## 1 10766.19  10765
 ```
 
 
