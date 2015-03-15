@@ -7,12 +7,18 @@ Clean up memory and load needed libraries:
     rm(list=(ls()))
 
     ## Load libraries
+    library(plyr)
     library(dplyr)
 ```
 
 ```
 ## 
 ## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:plyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
 ## 
 ## The following object is masked from 'package:stats':
 ## 
@@ -21,6 +27,10 @@ Clean up memory and load needed libraries:
 ## The following objects are masked from 'package:base':
 ## 
 ##     intersect, setdiff, setequal, union
+```
+
+```r
+    library(ggplot2)
 ```
 
 
@@ -88,7 +98,7 @@ data.group.interval <- group_by(data, interval)
 data.sum.interval <- summarize(data.group.interval, mean = mean(steps, na.rm = TRUE))
 
 ## Display time series
-plot(data.sum.interval$interval, data.sum.interval$mean, type = "l", xlab = "Interval", ylab = "Steps", main = "Average # of Steps Taken (averaged across all days)")
+ggplot(data.sum.interval, aes(x = interval, y = mean)) + geom_line() + xlab("Interval") + ylab("Steps") + ggtitle("Average # of Steps Taken (averaged across all days)")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
@@ -153,3 +163,17 @@ summarize(data.nona.sum.date, mean = mean(steps, na.rm = TRUE), median = median(
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```r
+## Create new factor var
+list_weekdays <- c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
+data.nona$wd_we <- factor((weekdays(as.Date(data.nona$date)) %in% list_weekdays) + 1L, levels = 1:2, labels=c("weekend", "weekday"))
+
+## Average # of steps per interval
+data.nona.sum.interval <- ddply(data.nona, c("interval", "wd_we"), summarize, steps = mean(steps))
+    
+# Panel plot
+ggplot(data.nona.sum.interval, aes(x = interval, y = steps, group = wd_we)) + facet_wrap( ~ wd_we) + geom_line()
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
