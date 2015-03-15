@@ -98,7 +98,7 @@ data.group.interval <- group_by(data, interval)
 data.sum.interval <- summarize(data.group.interval, mean = mean(steps, na.rm = TRUE))
 
 ## Display time series
-ggplot(data.sum.interval, aes(x = interval, y = mean)) + geom_line() + xlab("Interval") + ylab("Steps") + ggtitle("Average # of Steps Taken (averaged across all days)")
+ggplot(data.sum.interval, aes(x = interval, y = mean)) + geom_line() + xlab("Interval") + ylab("Steps") + ggtitle("Average # of Steps Taken (averaged across all days)") + ylab("Number of steps") + xlab("Interval")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
@@ -173,7 +173,7 @@ data.nona$wd_we <- factor((weekdays(as.Date(data.nona$date)) %in% list_weekdays)
 data.nona.sum.interval <- ddply(data.nona, c("interval", "wd_we"), summarize, steps = mean(steps))
     
 # Panel plot
-ggplot(data.nona.sum.interval, aes(x = interval, y = steps, group = wd_we)) + facet_wrap( ~ wd_we) + geom_line()
+ggplot(data.nona.sum.interval, aes(x = interval, y = steps, group = wd_we)) + facet_wrap( ~ wd_we, ncol = 1) + geom_line()  + ggtitle("Average # of Steps Taken (averaged across all days, imputed)") + ylab("Number of steps") + xlab("Interval")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
